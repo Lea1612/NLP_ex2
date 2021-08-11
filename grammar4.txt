@@ -1,0 +1,176 @@
+#b
+# Symbols in the grammar are case-sensitive.
+#
+# This grammar uses a convention that
+#    - terminals are lowercase          (president)
+#    - preterminals are capitalized     (Noun)
+#    - other nonterminals are all-caps  (NP)
+#
+# This convention just makes grammars more readable to humans.  Thus:
+#
+#    - When *you* are writing grammars, you should
+#      follow this convention unless you have a good reason not to.
+#
+#    - But the  *program* should still work with grammars that don't
+#      follow this convention.  So how can the program reliably tell
+#      the difference between terminal and nonterminal symbols?  If
+#      there is at least one rule for rewriting a symbol, then that
+#      symbol is a nonterminal and should be rewritten.
+#######################
+
+# Rules for creating full sentences.
+
+1	ROOT	S .
+1	ROOT	S !
+1   ROOT    YN ?
+5   ROOT    WH ?
+
+
+# The basic grammar rules.  Here's what the abbreviations stand for:
+#    S  = sentence
+#    NP = noun phrase
+#    VP = verb phrase
+#    PP = prepositional phrase
+#    Det = determiner (sometimes called "article")
+#    Prep = preposition
+#    Adj = adjective
+#    Coor = coordinator
+#    Pn = proper noun
+#    Be = verb be (is)
+#    Vi = intransitive verb
+#    Vip = intransitive verb in present
+#    Vt = transitive verb
+#    Vtp = transitive verb in present
+#    Ving = verb ing (eating)
+#    Cm = complementizer
+#    Sub = subject
+#    Aux = Auxiliar
+#    SBAR
+#    ADJP = Adjective phrase
+#    Rb = very
+#    Wh = where, how...
+#    Whwhat = what, who
+
+4	S	NP VP
+1   S   Sub VP      #it + VP
+4	NP	Det Noun
+1	NP	NP PP
+1	PP	Prep NP
+5	Noun	ADJP Noun
+1   VP  Vi Coor Vi      #thought and sighed
+1   VP  Vt Coor Vt NP   #Wanted and ate + NP because NP after transitive verb
+1   NP  NP Coor NP      #Several nouns noun and noun
+2   VP  Be Ving NP      #Is eating a sandwich
+1   VP  Be  ADJP         #Sally is lazy
+1   ADJP Rb ADJP         #very lazy
+3   ADJP Adj
+1   VP  Be  NP          #Is a sandwich
+1   NP  Pn          #Sally
+4   VP  Vi          #no NP after intransitive verb
+2   VP  Vt NP       #NP after transitive verb
+2   VP  VP PP       #PP on the verb for the sentence 'the president worked on every proposal on the desk'
+2   VP  Vthat SBAR             #complementizers
+1   VP  Vt  NP  SBAR        #It perplexed the president that...
+2   SBAR Cm  S           #That...
+
+#Rools for yes/no questions
+4   YN  Aux NP Vtp  NP          #does Sally eat a sandwich ?
+4   YN  Aux NP Vtp
+4   YN  Aux NP Vip             #does Sally understand ?
+4   YN  is it true that S       #mixing terminals and nonterminals is ok.
+4   YN  Be NP ADJP               #Is Sally lazy ?
+
+
+#Rools for wh word question
+1    WH  Wh  YN
+10   WH  Wh  YN SBAR
+1    WH Whwhat Aux NP Vtp
+1    WH Whwhat Aux NP Vip
+10    WH Whwhat Aux NP Vip SBAR
+10    WH Whwhat Aux NP Vtp NP with
+#10   WH Whwho  Aux NP Vtp
+
+
+
+
+# Vocabulary.  Your program can see that "ate" is a terminal
+# symbol because there exists no rule for rewriting it.
+# Any symbol that can rewrite as a terminal (or a string of
+# terminals, like "chief of staff") is called a "preterminal."  Notice
+# that a preterminal is a special kind of nonterminal.
+
+1	Vt	ate
+1	Vt	wanted
+1	Vt	kissed
+1	Vt	pickled
+
+#trasitive verbs in present
+1   Vtp eat
+1   Vtp want
+1   Vtp understand
+
+1	Vi	understood
+1   Vi    sighed
+1   Vi    worked
+1   Vi    thought
+
+#intransitive verbs in present
+1   Vip     think
+
+1   Vthat   thought
+1   Vthat   understood
+
+1	Det	the
+1	Det	a
+1	Det	every
+
+1	Noun	president
+1	Noun	sandwich
+1	Noun	pickle
+1	Noun	chief of staff
+1	Noun	floor
+1   Noun    desk
+1   Noun    proposal
+
+1	Adj	fine
+1	Adj	delicious
+1	Adj	perplexed
+1	Adj	pickled
+1   Adj lazy
+
+1   Rb very
+
+1	Prep	with
+1	Prep	on
+1	Prep	under
+1	Prep    in
+
+1   Coor    or
+1   Coor    and
+
+1   Pn  sally
+
+1   Be  is
+
+1   Ving    eating
+
+1   Cm  that
+
+1   Sub     it
+
+#Aux for yes/no questions
+1   Aux    did
+1   Aux    will
+1   Aux    does
+1   Aux    can
+1   Aux    could
+
+#Question words for WH word questions
+1   Whwhat  what
+
+1   Whwho  who
+
+1   Wh  when
+1   Wh  how
+1   Wh  where
+
